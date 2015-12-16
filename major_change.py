@@ -3,8 +3,6 @@ import time
 
 from openpyxl import load_workbook
 
-# from openpyxl.cell import column_index_from_string
-
 read_file = 'Major-School-College-Change 8.xlsx'
 write_file = 'table.txt'
 
@@ -15,18 +13,28 @@ sheet = wb[wb.get_sheet_names()[0]]
 row_count = sheet.max_row
 
 # 6 semester major sequence code: BJ, 62
+num_letters = 6
 
 # convert to google charts format
 with open(write_file, 'wb') as wf:
-   two_letters = {}
-   for row_num in range(2, row_count + 1):
-      code = str(sheet.cell(row=row_num, column=64).value[0]) + str(sheet.cell(row=row_num, column=64).value[1])
-      two_letters[code] = two_letters.get(code, 0) + 1
-   for key in two_letters:
-      str_to_write = '['
-      key_len = 2
-      for idx in range(key_len):
-         if idx + 1 < key_len:
-            str_to_write += '\'' + key[idx] + str(idx + 1) + '\', \'' + key[idx + 1] + str(idx + 2) + '\', '
-      str_to_write += str(two_letters[key]) + '],\n'
-      print str_to_write
+   # for total # of pairs possible,
+   for idx in range(num_letters): 
+      codes = {}
+      # get pair from a code
+      #look at every row
+      for row_num in range(2, row_count):
+         # get current row's code
+         curr_cell = sheet.cell(row=row_num, column=64)
+         # check the code length
+         code_len = len(curr_cell.value)
+         # check if there's a letter in the idx position
+         if code_len > (idx + 1):
+            code = str(curr_cell.value[idx]) + str(curr_cell.value[idx+1])
+            codes[code] = codes.get(code, 0) + 1
+         else:
+            pass
+         print codes, idx
+         # for key in codes:
+            # str_to_write = '[\'' + key[0] + str(idx+1) + '\', \'' + key[1] + str(idx+2)+ '\', ' + str(codes[key]) + '],\n'
+            # wf.write(str_to_write)
+      
