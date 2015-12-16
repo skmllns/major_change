@@ -1,33 +1,34 @@
 from collections import Counter
+import time
 
-import openpyxl
-from openpyxl.cell import column_index_from_string
+from openpyxl import load_workbook
 
+# from openpyxl.cell import column_index_from_string
 
-read_file = 'Major-School-College-Change-8.xlsx'
+read_file = 'Major-School-College-Change 8.xlsx'
 write_file = 'table.txt'
 
-wb = openpyxl.load_workbook(read_file)
-sheet = wb.worksheets[0]
-row_count = sheet.get_highest_row() - 1
-all_codes = {}
+start_time = time.time()
+wb = load_workbook(filename=read_file, read_only=True)
+sheet = wb[wb.get_sheet_names()[0]]
 
-# 2 semester major sequence code: BQ, 69
+row_count = sheet.max_row
 
-#set up dictionary
-for row_num in range(1, row_count):
-   code = sheet.cell(row=row_num, column=64).value
-   all_codes[code] = all_codes.get(code, 0) + 1
-   
-num_elems = len(all_codes)
+# 6 semester major sequence code: BJ, 62
 
 # convert to google charts format
 with open(write_file, 'wb') as wf:
-
-   for key in all_codes:
-      if len(key) > 1:
-         elem = key[1]
-      else:
-         elem = '-'
-         
-      wf.writelines(['[\'' + key[0] + '\', \'' + elem + '\', ' + str(all_codes[key]) + '],\n'])
+   two_letters = {}
+   for row_num in range(2, row_count + 1):
+      code = str(sheet.cell(row=row_num, column=64).value[0]) + str(sheet.cell(row=row_num, column=64).value[1])
+      two_letters[code] = two_letters.get(code, 0) + 1
+   for key in two_letters:
+      key_len = len(key)
+      str_to_write = '['
+      for idx in range(key_len):
+         if idx + 1 < key_len:
+            str_to_write += '\'' + key[idx] + str(idx + 1) + '\', \'' + key[idx + 1] + str(idx + 2) + '\', '
+         str_to_write += str(two_letters[key]) + '],\n'
+         print str_to_write
+                
+      # wf.writelines(['[\'' + key[0] + '\', \'' + elem + '\', ' + str(all_codes[key]) + '],\n'])
