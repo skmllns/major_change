@@ -82,6 +82,7 @@ script_end2 = """
 def write_chart(gender, contents):
    for idx in range(num_letters): 
       codes = OrderedDict()
+      sorted_codes = []
       for curr_cell in contents:
          full_code = curr_cell[0]
          full_code_len = curr_cell[1]
@@ -90,9 +91,11 @@ def write_chart(gender, contents):
             codes[code] = codes.get(code, 0) + 1
          else:
             contents.remove(curr_cell)
-      for key in codes:
-         str_to_write = '\t\t\t\t\t[\'' + key[0] + str(idx+1) + '\', \'' + key[1] + str(idx+2)+ '\', ' + str(codes[key]) + ']'
-         if idx + 1 == num_letters - 1 and codes.keys().index(key) == len(codes) - 1:
+      for elem in sorted(codes):
+         sorted_codes.append([elem, codes[elem]])
+      for pos in sorted_codes:
+         str_to_write = '\t\t\t\t\t[\'' + pos[0][0] + str(idx+1) + '\', \'' + pos[0][1] + str(idx+2)+ '\', ' + str(pos[1]) + ']'
+         if idx + 1 == num_letters - 1 and sorted_codes.index(pos) == len(sorted_codes) - 1:
                pass
          else:
             str_to_write += ','
