@@ -1,4 +1,5 @@
 import time
+from collections import OrderedDict
 
 import pandas as pd
 
@@ -17,7 +18,7 @@ for cell in df[col_name]:
 #convert to google charts format
 with open(write_file, 'wb') as wf:
    for idx in range(num_letters): 
-      codes = {}
+      codes = OrderedDict()
       for curr_cell in col_contents:
          full_code = curr_cell[0]
          full_code_len = curr_cell[1]
@@ -27,7 +28,12 @@ with open(write_file, 'wb') as wf:
          else:
             col_contents.remove(curr_cell)
       for key in codes:
-         str_to_write ='[\'' + key[0] + str(idx+1) + '\', \'' + key[1] + str(idx+2)+ '\', ' + str(codes[key]) + '],\n'
+         str_to_write = '[\'' + key[0] + str(idx+1) + '\', \'' + key[1] + str(idx+2)+ '\', ' + str(codes[key]) + ']'
+         if idx + 1 == num_letters - 1 and codes.keys().index(key) == len(codes) - 1:
+               pass
+         else:
+            str_to_write += ','
+         str_to_write += '\n'
          wf.write(str_to_write)
        
 print "Time to complete:" + str(time.time() - start_time)
