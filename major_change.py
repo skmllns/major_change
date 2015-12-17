@@ -32,7 +32,7 @@ with open(write_file, 'wb') as wf:
           data.addColumn('string', 'From');
           data.addColumn('string', 'To');
           data.addColumn('number', 'Weight');
-          data.addRows(['
+          data.addRows([
    """
    wf.write(body)
    for idx in range(num_letters): 
