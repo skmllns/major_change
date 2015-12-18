@@ -1,24 +1,41 @@
+########################################################################################
+## 12/2015 - SKM
+##
+## HTML: https://developers.google.com/chart/interactive/docs/gallery/sankey
+##
+## Creates Sankey diagram based on sequence codes
+## Currently looking at school change sequence codes of length=6, separated by gender
+##
+#########################################################################################
+
 import time
-from collections import OrderedDict
 
 import pandas as pd
 
+#let's time this
 start_time = time.time()
 
+#i/o
 read_file = '../Major-School-College-Change 8.csv'
 write_file = 'sankey_py.html'
 
+#choose appropriate column names
 code_col_name = 'sch_seq_6'
 gender_col_name = 'sex'
+
+#create lists to separate m/f
 mcode_col_contents = []
 fcode_col_contents = []
 
+#max_length of sequence code
 num_letters = 6
 
+#read the file into a pandas dataframe, for efficiency
 df = pd.read_csv(read_file)
 
 #get gender, code
-
+#itertuples iterates over the rows as tuples
+#create a list of lists of sequence codes and their length
 for row in df.itertuples():
    if row[4] == 'M':
       mcode_col_contents.append([row[64], len(row[64])])
@@ -39,6 +56,7 @@ body = """<html>
       <div id="sankey_2" style="width: 900px; height: 300px;"></div>
       
 """  
+
 script_begin = """<script type="text/javascript">
       google.setOnLoadCallback(drawChart);
       function drawChart() {
@@ -57,8 +75,6 @@ script_middle = """
        data2.addRows([
 """  
 
-    
- 
 script_end2 = """
 
    var options = {
@@ -76,25 +92,43 @@ script_end2 = """
    </html>
 """
 
-
-
-#convert to google charts format
+#input: gender, sequence codes with that gender code
+#output: writes individual node-weight groups to a file
 def write_chart(gender, contents):
+
+   #look at each pair of letters, up to the maximum code length
    for idx in range(num_letters): 
-      codes = OrderedDict()
-      sorted_codes = []
-      for curr_cell in contents:
+   
+      #create a dictionary for nodes and weights
+      codes = {}  
+
+      #this list will be useful if the order of nodes could be somehow set 
+      sorted_codes = []                              
+      
+      #look at each code/length pairing
+      for curr_cell in contents:                   
          full_code = curr_cell[0]
          full_code_len = curr_cell[1]
+         
+         #test if there are enough letters in this idx position to make a pair
+         #if so, make a dictionary of nodes and weights
+         #if not, remove the code from the list
          if full_code_len > idx + 1:
             code = str(full_code[idx]) + str(full_code[idx+1])
             codes[code] = codes.get(code, 0) + 1
          else:
             contents.remove(curr_cell)
-      for elem in sorted(codes):
+            
+      #for future implementation (refer to above). how the heck do you sort dicts with lambda?
+      for elem in sorted(codes):                  
          sorted_codes.append([elem, codes[elem]])
+         
+      #convert to google charts format: [node-start, node-finish, weight],
       for pos in sorted_codes:
          str_to_write = '\t\t\t\t\t[\'' + pos[0][0] + str(idx+1) + '\', \'' + pos[0][1] + str(idx+2)+ '\', ' + str(pos[1]) + ']'
+         
+         #check if this is the very very last element in the entire list of sequence codes
+         #if so, don't add a comma separator
          if idx + 1 == num_letters - 1 and sorted_codes.index(pos) == len(sorted_codes) - 1:
                pass
          else:
@@ -103,7 +137,8 @@ def write_chart(gender, contents):
          wf.write(str_to_write)
 
    wf.write(']);')
-               
+
+#concatenate html with sankey diagram information   
 with open(write_file, 'wb') as wf:
    initial_html = body + script_begin
    wf.write(initial_html)
@@ -112,7 +147,4 @@ with open(write_file, 'wb') as wf:
    write_chart('M', mcode_col_contents)
    wf.write(script_end2)
    
-
-  
-
 print "Time to complete:" + str(time.time() - start_time)
