@@ -98,7 +98,7 @@ def write_chart(gender, contents):
 
    #look at each pair of letters, up to the maximum code length
    for idx in range(num_letters): 
-   
+      print idx
       #create a dictionary for nodes and weights
       codes = {}  
 
@@ -111,13 +111,21 @@ def write_chart(gender, contents):
          full_code_len = curr_cell[1]
          
          #test if there are enough letters in this idx position to make a pair
-         #if so, make a dictionary of nodes and weights
-         #if not, remove the code from the list
-         if full_code_len > idx + 1:
-            code = str(full_code[idx]) + str(full_code[idx+1])
+         if full_code_len >= idx + 1:
+            if full_code_len > idx + 1:
+               code = str(full_code[idx]) + str(full_code[idx+1])
+               
+            #if there's only one letter in the pair, make the second node a 'blank' 
+            #to indicate the student didn't return the next semester
+            else:
+               code = str(full_code[idx]) + '-'
+            
+            #make a dictionary of nodes and weights
             codes[code] = codes.get(code, 0) + 1
+                
          else:
             contents.remove(curr_cell)
+         
             
       #for future implementation (refer to above). how the heck do you sort dicts with lambda?
       for elem in sorted(codes):                  
@@ -125,11 +133,11 @@ def write_chart(gender, contents):
          
       #convert to google charts format: [node-start, node-finish, weight],
       for pos in sorted_codes:
-         str_to_write = '\t\t\t\t\t[\'' + pos[0][0] + str(idx+1) + '\', \'' + pos[0][1] + str(idx+2)+ '\', ' + str(pos[1]) + ']'
-         
+         str_to_write = '\t\t\t\t\t[\'' + pos[0][0] + str(idx+1) + '\', \'' + pos[0][1] + str(idx+2) + '\', ' + str(pos[1]) + ']' 
+       
          #check if this is the very very last element in the entire list of sequence codes
          #if so, don't add a comma separator
-         if idx + 1 == num_letters - 1 and sorted_codes.index(pos) == len(sorted_codes) - 1:
+         if idx  == num_letters - 1 and sorted_codes.index(pos) == len(sorted_codes) - 1:
                pass
          else:
             str_to_write += ','
