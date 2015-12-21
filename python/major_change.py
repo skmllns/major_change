@@ -98,7 +98,7 @@ def write_chart(gender, contents):
 
    #look at each pair of letters, up to the maximum code length
    for idx in range(num_letters): 
-      print idx
+      # print idx
       #create a dictionary for nodes and weights
       codes = {}  
 
@@ -117,7 +117,7 @@ def write_chart(gender, contents):
             #if there's only one letter in the pair:
             #if the student finished all semesters:
             elif full_code_len == num_letters: 
-               break
+               contents.remove(curr_cell)
             #else, add a blank to indicate the student didn't return the next semester,
             #and remove it 
             else:
@@ -126,27 +126,27 @@ def write_chart(gender, contents):
             
             #make a dictionary of nodes and weights
          codes[code] = codes.get(code, 0) + 1
-                
-
-            
-         
-            
+        
       #for future implementation (refer to above). how the heck do you sort dicts with lambda?
       for elem in sorted(codes):                  
          sorted_codes.append([elem, codes[elem]])
          
       #convert to google charts format: [node-start, node-finish, weight],
       for pos in sorted_codes:
-         str_to_write = '\t\t\t\t\t[\'' + pos[0][0] + str(idx+1) + '\', \'' + pos[0][1] + str(idx+2) + '\', ' + str(pos[1]) + ']' 
-       
+			print idx
+			str_to_write = '\t\t\t\t\t[\'' + pos[0][0] + str(idx+1) + '\', \'' + pos[0][1] + str(idx+2) + '\', ' + str(pos[1]) + ']' 
+			print idx
          #check if this is the very very last element in the entire list of sequence codes
          #if so, don't add a comma separator
-         if idx  == num_letters - 1 and sorted_codes.index(pos) == len(sorted_codes) - 1:
-               pass
-         else:
-            str_to_write += ','
-         str_to_write += '\n'
-         wf.write(str_to_write)
+			#print idx
+
+			if idx == num_letters - 1 and sorted_codes.index(pos) == len(sorted_codes) - 1:
+				print "last idx"
+				pass
+			else:
+				str_to_write += ','
+			str_to_write += '\n'
+			wf.write(str_to_write)
 
    wf.write(']);')
 
