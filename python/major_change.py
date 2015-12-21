@@ -114,17 +114,21 @@ def write_chart(gender, contents):
          if full_code_len >= idx + 1:
             if full_code_len > idx + 1:
                code = str(full_code[idx]) + str(full_code[idx+1])
-               
-            #if there's only one letter in the pair, make the second node a 'blank' 
-            #to indicate the student didn't return the next semester
+            #if there's only one letter in the pair:
+            #if the student finished all semesters:
+            elif full_code_len == num_letters: 
+               break
+            #else, add a blank to indicate the student didn't return the next semester,
+            #and remove it 
             else:
                code = str(full_code[idx]) + '-'
+               contents.remove(curr_cell)
             
             #make a dictionary of nodes and weights
-            codes[code] = codes.get(code, 0) + 1
+         codes[code] = codes.get(code, 0) + 1
                 
-         else:
-            contents.remove(curr_cell)
+
+            
          
             
       #for future implementation (refer to above). how the heck do you sort dicts with lambda?
