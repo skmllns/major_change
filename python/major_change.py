@@ -8,12 +8,7 @@
 ##
 #########################################################################################
 
-import time
-
 import pandas as pd
-
-#let's time this
-start_time = time.time()
 
 #i/o
 read_file = '../Major-School-College-Change 8.csv'
@@ -158,5 +153,3 @@ with open(write_file, 'wb') as wf:
    wf.write(script_middle)
    write_chart('M', mcode_col_contents)
    wf.write(script_end2)
-   
-print "Time to complete:" + str(time.time() - start_time)
