@@ -93,7 +93,6 @@ def write_chart(gender, contents):
 
    #look at each pair of letters, up to the maximum code length
    for idx in range(num_letters): 
-      # print idx
       #create a dictionary for nodes and weights
       codes = {}  
 
@@ -128,9 +127,7 @@ def write_chart(gender, contents):
          
       #convert to google charts format: [node-start, node-finish, weight],
       for pos in sorted_codes:
-			print idx
 			str_to_write = '\t\t\t\t\t[\'' + pos[0][0] + str(idx+1) + '\', \'' + pos[0][1] + str(idx+2) + '\', ' + str(pos[1]) + ']' 
-			print idx
          #check if this is the very very last element in the entire list of sequence codes
          #if so, don't add a comma separator
 			#print idx
